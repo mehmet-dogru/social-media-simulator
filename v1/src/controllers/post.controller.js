@@ -122,7 +122,40 @@ class PostController {
 
       successResponse(res, httpStatus.OK, posts);
     } catch (err) {
-      return next(new ApiError(err.message, httpStatus.BAD_REQUEST));
+      return next(new ApiError(err.message, httpStatus.INTERNAL_SERVER_ERROR));
+    }
+  }
+
+  async retweet(req, res, next) {
+    try {
+      const postId = req.params.postId;
+      const userId = req.userId;
+
+      const post = await postService.findById(postId);
+      if (!post) {
+        return next(new ApiError("Gönderi bulunamadı", httpStatus.INTERNAL_SERVER_ERROR));
+      }
+
+      const retweet = {
+        originalPost: postId,
+        author: userId,
+      };
+
+      const retweetList = post.retweets.map((x) => x._id.toString());
+
+      if (retweetList.includes(userId.toString())) {
+        return next(new ApiError("Daha önceden retweetlendi", httpStatus.BAD_REQUEST));
+      }
+      post.retweets.push(userId);
+      await post.save();
+
+      const user = await userService.findById(userId);
+      user.sharedPosts.push(post._id);
+      await user.save();
+
+      successResponse(res, httpStatus.OK, retweet);
+    } catch (err) {
+      return next(new ApiError(err.message, httpStatus.INTERNAL_SERVER_ERROR));
     }
   }
 }

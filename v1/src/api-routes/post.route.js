@@ -13,5 +13,6 @@ router.route("/").get(authenticate, authorization([ROLES.USER, ROLES.ADMIN]), po
 router.route("/like/:postId").post(authenticate, postController.like);
 router.route("/unlike/:postId").post(authenticate, postController.unlike);
 router.route("/feed").get(authenticate, postController.postsFromFollowedUsers);
+router.route("/retweet/:postId").post(authenticate, postController.retweet);
 
 module.exports = router;
