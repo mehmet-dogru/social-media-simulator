@@ -7,10 +7,15 @@ class UserService extends BaseService {
   }
 
   findById(id) {
-    return this.BaseModel.findById(id).populate({
-      path: "followers",
-      select: "firstName lastName",
-    });
+    return this.BaseModel.findById(id)
+      .populate({
+        path: "followers",
+        select: "firstName lastName",
+      })
+      .populate({
+        path: "following",
+        select: "firstName lastName",
+      });
   }
 
   list(page, limit, where) {
@@ -19,6 +24,10 @@ class UserService extends BaseService {
       .skip((page - 1) * limit)
       .populate({
         path: "followers",
+        select: "firstName lastName",
+      })
+      .populate({
+        path: "following",
         select: "firstName lastName",
       });
 

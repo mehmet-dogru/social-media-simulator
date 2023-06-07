@@ -12,4 +12,7 @@ router.post("/login", validate(validationSchema.loginSchema), userController.log
 router.get("/profile", authenticate, userController.profile);
 router.get("/", authenticate, userController.list);
 router.post("/update-profile-image", authenticate, userController.updateProfileImage);
+router.post("/follow/:id", authenticate, userController.follow);
+router.post("/unfollow/:id", authenticate, userController.unFollow);
+
 module.exports = router;

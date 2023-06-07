@@ -93,6 +93,72 @@ class UserController {
       return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
     }
   }
+
+  async follow(req, res, next) {
+    try {
+      const userId = req.params.id;
+      const followerId = req.userId;
+
+      const userToFollow = await userService.findById(userId);
+
+      if (!userToFollow) {
+        return next(new ApiError("Kullanıcı Bulanamadı", httpStatus.NOT_FOUND));
+      }
+
+      const userToFollowFollowersList = userToFollow.followers.map((x) => x._id.toString());
+
+      if (userToFollowFollowersList.includes(followerId.toString())) {
+        return next(new ApiError("Kullanıcıyı zaten takip ediyorsunuz", httpStatus.BAD_REQUEST));
+      }
+
+      userToFollow.followers.push(followerId);
+      await userToFollow.save();
+
+      const followerUser = await userService.findById(followerId);
+      followerUser.following.push(userId);
+      await followerUser.save();
+
+      successResponse(res, httpStatus.OK, {
+        user: { firstName: userToFollow.firstName, lastName: userToFollow.lastName },
+        message: "Kullanıcı takip edildi.",
+      });
+    } catch (err) {
+      return next(new ApiError(err.message, httpStatus.INTERNAL_SERVER_ERROR));
+    }
+  }
+
+  async unFollow(req, res, next) {
+    try {
+      const userId = req.params.id;
+      const followerId = req.userId;
+
+      const userToUnfollow = await userService.findById(userId);
+
+      if (!userToUnfollow) {
+        return next(new ApiError("Kullanıcı Bulanamadı", httpStatus.NOT_FOUND));
+      }
+
+      const userToUnFollowFollowersList = userToUnfollow.followers.map((x) => x._id.toString());
+
+      if (!userToUnFollowFollowersList.includes(followerId.toString())) {
+        return next(new ApiError("Kullanıcıyı zaten takip etmiyorsunuz", httpStatus.BAD_REQUEST));
+      }
+
+      userToUnfollow.followers.pull(followerId);
+      await userToUnfollow.save();
+
+      const followerUser = await userService.findById(followerId);
+      followerUser.following.pull(userId);
+      await followerUser.save();
+
+      successResponse(res, httpStatus.OK, {
+        user: { firstName: userToUnfollow.firstName, lastName: userToUnfollow.lastName },
+        message: "Kullanıcı takipten çıkıldı",
+      });
+    } catch (err) {
+      return next(new ApiError(err.message, httpStatus.INTERNAL_SERVER_ERROR));
+    }
+  }
 }
 
 module.exports = new UserController();
