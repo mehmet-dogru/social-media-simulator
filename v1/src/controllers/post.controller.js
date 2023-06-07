@@ -35,6 +35,10 @@ class PostController {
         ...req.body,
       });
 
+      const user = await userService.findById(req.userId);
+      user.sharedPosts.push(post._id);
+      await user.save();
+
       successResponse(res, httpStatus.OK, post);
     } catch (error) {
       return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
