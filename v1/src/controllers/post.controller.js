@@ -35,7 +35,6 @@ class PostController {
         ...req.body,
       });
 
-      await sendEmail("Samsun Üniversitesinden Yeni Duyuru", post);
       successResponse(res, httpStatus.OK, post);
     } catch (error) {
       return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
