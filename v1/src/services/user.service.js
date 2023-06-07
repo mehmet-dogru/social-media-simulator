@@ -15,6 +15,10 @@ class UserService extends BaseService {
       .populate({
         path: "following",
         select: "firstName lastName",
+      })
+      .populate({
+        path: "sharedPosts",
+        select: "title content imageUrl",
       });
   }
 
@@ -29,6 +33,10 @@ class UserService extends BaseService {
       .populate({
         path: "following",
         select: "firstName lastName",
+      })
+      .populate({
+        path: "sharedPosts",
+        select: "title content imageUrl",
       });
 
     return allUsers;
