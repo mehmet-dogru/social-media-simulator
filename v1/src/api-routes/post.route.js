@@ -12,5 +12,6 @@ router.route("/").post(authenticate, authorization([ROLES.USER, ROLES.ADMIN]), v
 router.route("/").get(authenticate, authorization([ROLES.USER, ROLES.ADMIN]), postController.list);
 router.route("/like/:postId").post(authenticate, postController.like);
 router.route("/unlike/:postId").post(authenticate, postController.unlike);
+router.route("/posts-from-followed-users").get(authenticate, postController.postsFromFollowedUsers);
 
 module.exports = router;
