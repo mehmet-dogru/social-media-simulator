@@ -38,26 +38,20 @@ const UserSchema = new mongoose.Schema(
     },
     following: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
     followers: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
     sharedPosts: [
       {
-        post: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Post",
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
       },
     ],
     role: { type: String, enum: [ROLES.ADMIN, ROLES.USER], required: true },
