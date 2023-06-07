@@ -116,7 +116,7 @@ class PostController {
       const { limit = 10, page = 1 } = req.query;
       const posts = await postService.list(page, limit, { author: { $in: followingList } });
 
-      if (!posts) {
+      if (posts.length == 0) {
         return next(new ApiError("Herhangi bir gönderi bulunamadı", httpStatus.BAD_REQUEST));
       }
 
