@@ -4,7 +4,6 @@ const userService = require("../services/user.service");
 const ApiError = require("../responses/error.response");
 const successResponse = require("../responses/success.response");
 const path = require("path");
-const sendEmail = require("../scripts/utils/send-email.utils");
 const cloudinary = require("cloudinary").v2;
 
 class PostController {
@@ -103,6 +102,25 @@ class PostController {
       await post.save();
 
       successResponse(res, httpStatus.OK, { message: "Gönderi beğenilmekten vazgeçildi", post: post.title });
+    } catch (err) {
+      return next(new ApiError(err.message, httpStatus.BAD_REQUEST));
+    }
+  }
+
+  async postsFromFollowedUsers(req, res, next) {
+    try {
+      const user = await userService.findById(req.userId);
+
+      const followingList = user.following.map((user) => user._id);
+
+      const { limit = 10, page = 1 } = req.query;
+      const posts = await postService.list(page, limit, { author: { $in: followingList } });
+
+      if (!posts) {
+        return next(new ApiError("Herhangi bir gönderi bulunamadı", httpStatus.BAD_REQUEST));
+      }
+
+      successResponse(res, httpStatus.OK, posts);
     } catch (err) {
       return next(new ApiError(err.message, httpStatus.BAD_REQUEST));
     }
