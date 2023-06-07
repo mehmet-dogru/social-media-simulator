@@ -10,5 +10,7 @@ const ROLES = require("../references/role.reference");
 
 router.route("/").post(authenticate, authorization([ROLES.USER, ROLES.ADMIN]), validate(validationSchema.createPostSchema), postController.create);
 router.route("/").get(authenticate, authorization([ROLES.USER, ROLES.ADMIN]), postController.list);
+router.route("/like/:postId").post(authenticate, postController.like);
+router.route("/unlike/:postId").post(authenticate, postController.unlike);
 
 module.exports = router;

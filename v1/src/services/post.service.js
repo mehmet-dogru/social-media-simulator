@@ -13,6 +13,10 @@ class PostService extends BaseService {
       .populate({
         path: "author",
         select: "firstName lastName profileImage",
+      })
+      .populate({
+        path: "likes",
+        select: "firstName lastName",
       });
 
     return allPosts;
