@@ -52,14 +52,55 @@ class PostController {
     }
   }
 
-  async listAll(req, res, next) {
+  async like(req, res, next) {
     try {
-      const { page = 1, limit = 10 } = req.query;
-      const posts = await postService.list(page, limit);
+      const postId = req.params.postId;
+      const userId = req.userId;
 
-      successResponse(res, httpStatus.OK, posts);
-    } catch (error) {
-      return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
+      const post = await postService.findById(postId);
+
+      if (!post) {
+        return next(new ApiError("Gönderi bulunamadı", httpStatus.NOT_FOUND));
+      }
+
+      const postLikesList = post.likes.map((x) => x._id.toString());
+
+      if (postLikesList.includes(userId.toString())) {
+        return next(new ApiError("Gönderiyi zaten beğendiniz", httpStatus.BAD_REQUEST));
+      }
+
+      post.likes.push(userId);
+      await post.save();
+
+      successResponse(res, httpStatus.OK, { message: "Gönderi beğenildi", post: post.title });
+    } catch (err) {
+      return next(new ApiError(err.message, httpStatus.BAD_REQUEST));
+    }
+  }
+
+  async unlike(req, res, next) {
+    try {
+      const postId = req.params.postId;
+      const userId = req.userId;
+
+      const post = await postService.findById(postId);
+
+      if (!post) {
+        return next(new ApiError("Gönderi bulunamadı", httpStatus.NOT_FOUND));
+      }
+
+      const postLikesList = post.likes.map((x) => x._id.toString());
+
+      if (!postLikesList.includes(userId.toString())) {
+        return next(new ApiError("Gönderiyi zaten beğenmediniz", httpStatus.BAD_REQUEST));
+      }
+
+      post.likes.pull(userId);
+      await post.save();
+
+      successResponse(res, httpStatus.OK, { message: "Gönderi beğenilmekten vazgeçildi", post: post.title });
+    } catch (err) {
+      return next(new ApiError(err.message, httpStatus.BAD_REQUEST));
     }
   }
 }
