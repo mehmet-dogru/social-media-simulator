@@ -48,7 +48,27 @@ class UserController {
         return next(new ApiError("User not found", httpStatus.NOT_FOUND));
       }
 
-      successResponse(res, httpStatus.OK, user);
+      const followersCount = user.followers.length;
+      const followingCount = user.following.length;
+
+      successResponse(res, httpStatus.OK, { user, followersCount, followingCount });
+    } catch (error) {
+      return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
+    }
+  }
+
+  async profileById(req, res, next) {
+    try {
+      const user = await userService.findById(req.params.userId);
+
+      if (!user) {
+        return next(new ApiError("User not found", httpStatus.NOT_FOUND));
+      }
+
+      const followersCount = user.followers.length;
+      const followingCount = user.following.length;
+
+      successResponse(res, httpStatus.OK, { user, followersCount, followingCount });
     } catch (error) {
       return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
     }

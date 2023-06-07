@@ -10,6 +10,7 @@ const authorization = require("../middlewares/authorization.middleware");
 router.post("/register", validate(validationSchema.registerSchema), userController.register);
 router.post("/login", validate(validationSchema.loginSchema), userController.login);
 router.get("/profile", authenticate, userController.profile);
+router.get("/profile/:userId", authenticate, userController.profileById);
 router.get("/", authenticate, userController.list);
 router.post("/update-profile-image", authenticate, userController.updateProfileImage);
 router.post("/follow/:id", authenticate, userController.follow);
