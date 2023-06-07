@@ -9,11 +9,11 @@ const authorization = require("../middlewares/authorization.middleware");
 
 router.post("/register", validate(validationSchema.registerSchema), userController.register);
 router.post("/login", validate(validationSchema.loginSchema), userController.login);
-router.get("/profile", authenticate, userController.profile);
-router.get("/profile/:userId", authenticate, userController.profileById);
-router.get("/", authenticate, userController.list);
-router.post("/update-profile-image", authenticate, userController.updateProfileImage);
-router.post("/follow/:id", authenticate, userController.follow);
-router.post("/unfollow/:id", authenticate, userController.unFollow);
+router.get("/profile", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.profile);
+router.get("/profile/:userId", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.profileById);
+router.get("/", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.list);
+router.post("/update-profile-image", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.updateProfileImage);
+router.post("/follow/:id", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.follow);
+router.post("/unfollow/:id", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.unFollow);
 
 module.exports = router;
