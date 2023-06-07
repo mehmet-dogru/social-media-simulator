@@ -55,6 +55,29 @@ class PostController {
     }
   }
 
+  async update(req, res, next) {
+    try {
+      const post = await postService.findById(req.params.postId);
+
+      if (!post) {
+        return next(new ApiError("Gönderi bulunamadı", httpStatus.BAD_REQUEST));
+      }
+
+      if (post.author._id == req.userId) {
+        const updatedPost = await postService.update(req.params.postId, {
+          title: req.body.title,
+          content: req.body.content,
+        });
+
+        successResponse(res, httpStatus.OK, updatedPost);
+      } else {
+        return next(new ApiError("Size ait bir post değil", httpStatus.BAD_REQUEST));
+      }
+    } catch (err) {
+      return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
+    }
+  }
+
   async like(req, res, next) {
     try {
       const postId = req.params.postId;
