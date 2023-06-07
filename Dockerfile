@@ -1,7 +1,7 @@
-ARG NODE_VERSION=16.19.1
-FROM node:${NODE_VERSION}-slim as base
-WORKDIR /home/node/app
-COPY v1/src /home/node/app/
+FROM node:latest
+WORKDIR /app
+COPY package.json .
 RUN npm install
-CMD npm run start
+COPY --from=build /app /app
+CMD [ "npm", "start" ]
 EXPOSE 3000
