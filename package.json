@@ -27,6 +27,7 @@
     "nodemailer-express-handlebars": "^6.1.0",
     "nodemon": "^2.0.22",
     "path": "^0.12.7",
+    "swagger-ui-express": "^4.6.3",
     "winston": "^3.9.0"
   }
 }
