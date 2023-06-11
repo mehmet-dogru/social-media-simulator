@@ -74,6 +74,30 @@ class UserController {
     }
   }
 
+  async updateProfile(req, res, next) {
+    try {
+      const updatedUser = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+      };
+
+      const user = await userService.update(req.params.userId, updatedUser);
+
+      if (!user) {
+        return next(new ApiError("User not found", httpStatus.BAD_REQUEST));
+      }
+
+      if (user._id == req.userId) {
+        successResponse(res, httpStatus.OK, { message: "User uptaded", user });
+      } else {
+        return next(new ApiError("This user is not you", httpStatus.BAD_REQUEST));
+      }
+    } catch (err) {
+      return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
+    }
+  }
+
   async list(req, res, next) {
     try {
       const { page = 1, limit = 10, role = ROLES.USER } = req.query;

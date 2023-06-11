@@ -10,6 +10,7 @@ const authorization = require("../middlewares/authorization.middleware");
 
 router.post("/register", validate(validationSchema.registerSchema), userController.register);
 router.post("/login", validate(validationSchema.loginSchema), userController.login);
+router.put("/:userId", authenticate, validate(validationSchema.updateSchema), userController.updateProfile);
 router.get("/profile", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.profile);
 router.get("/profile/:userId", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.profileById);
 router.get("/", authenticate, authorization([ROLES.USER, ROLES.ADMIN]), userController.list);
