@@ -94,7 +94,7 @@ class UserController {
         return next(new ApiError("This user is not you", httpStatus.BAD_REQUEST));
       }
     } catch (err) {
-      return next(new ApiError(error.message, httpStatus.BAD_REQUEST));
+      return next(new ApiError(err.message, httpStatus.BAD_REQUEST));
     }
   }
 
