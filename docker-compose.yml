@@ -1,12 +1,21 @@
 version: '3.1'
 services:
-  mongodb:
-    image: mongo:latest
-    restart: always
+  mongo-server:
+    image: mongo
     ports:
-      - 27017:27017
+      - "27018:27017"
+    container_name: mongodb
     volumes:
-      - data:/data/db
-volumes:
-  data:
+      - ./db/:/data/db
+  node-app:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    image: social-media-simulator
+    ports:
+      - "3000:3000"
+    links:
+      - mongo-server
+    depends_on:
+      - mongo-server
   
