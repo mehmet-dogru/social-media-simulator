@@ -18,7 +18,7 @@ To start working with the project, follow the steps below:
 
 ## License
 
-This project is licensed under the [MIT License](LICENCE).
+This project is licensed under the [MIT License](LICENSE).
 
 ## API Documentations
 
